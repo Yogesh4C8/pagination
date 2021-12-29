@@ -32,55 +32,40 @@ const Pagination = () => {
     const [searchResults, setSearchResults] = useState([]);
     
     const classes = useStyles();
-    const { TblContainer, TblHead, TblPagination, dataAfterPaging } = Table(users, headCells); 
+    let usersList = searchTerm.length < 2 ? users: searchResults
+    const { TblContainer, TblHead, TblPagination, dataAfterPaging } = Table(usersList, headCells); 
 
     const searchHandler = (e) => {
-        console.log(e.target.value)
         setSearchTerm(e.target.value)
-        // users={searchTerm.length < 3 ? users: searchResults}
-        if(searchTerm !== "" ){
+        if(searchTerm !== "" && searchTerm.length > 2 ){
             const newUsersList = users.filter(user =>{
                 return Object.values(user).join(" ").toLowerCase().includes(searchTerm.toLowerCase())
             })
-            console.log(newUsersList)
+            // console.log("newuserslist---->",newUsersList)
             setSearchResults(newUsersList)
         }else{
             setSearchResults(users)
-            console.log(searchResults)
+            // console.log("searchResults----->",searchResults)
         }
     }
+    let renderedUsersList = dataAfterPaging().map((user) => (
+        <TableRow key={user.id}>
+            <TableCell align='center'>{user.userId}</TableCell>
+            <TableCell align='center'>{user.name}</TableCell>
+            <TableCell align='center'>{user.userCode}</TableCell>
+        </TableRow>
+    ))
     return (
         <Container maxWidth='xl' className={classes.root} style={{backgroundColor:"white"}}>
             <Header text='Feature/Pagination' />
             <TextField id="outlined-basic" label="Search User" variant="outlined"  value={searchTerm} onChange={searchHandler} autoComplete='off'/>
-            {/* <TextField
-                id="input-with-icon-textfield"
-                label="TextField"
-                InputProps={{
-                startAdornment: (
-                    <BsSearch />
-                ),
-                }}
-                variant="standard"
-            /> */}
+            
             <Paper className={classes.paper}>
                 <TblContainer>
                     <TblHead />
                     <TableBody>
                         {
-                            dataAfterPaging().map((employee) => (
-                                // <TableRow key={employee.id}>
-                                //     <TableCell align='center'>{employee.name}</TableCell>
-                                //     <TableCell align='center'>{employee.email}</TableCell>
-                                //     <TableCell align='center'>{employee.mobile}</TableCell>
-                                //     <TableCell align='center'>{employee.city}</TableCell>
-                                // </TableRow>
-                                <TableRow key={employee.id}>
-                                    <TableCell align='center'>{employee.userId}</TableCell>
-                                    <TableCell align='center'>{employee.name}</TableCell>
-                                    <TableCell align='center'>{employee.userCode}</TableCell>
-                                </TableRow>
-                            ))
+                            renderedUsersList.length > 0 ? renderedUsersList : "No users found"
                         }
                     </TableBody>
                 </TblContainer>
