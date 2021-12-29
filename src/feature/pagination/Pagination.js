@@ -1,9 +1,8 @@
 import React,{useState} from 'react'
 import { Container, makeStyles, Paper, TableBody, TableCell, TableRow,TextField} from '@material-ui/core'
-// import {BsSearch} from "react-icons/bs"
 import Header from '../../components/HeaderComponent';
 import Table from '../../components/TableComponent';
-import { employeeData, headCells } from './EmployeeData';
+import { usersData, headCells } from './UsersData';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Pagination = () => {
-    const [users, setUsers] = useState(employeeData);
+    const [users, setUsers] = useState(usersData);
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     
