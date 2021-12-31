@@ -1,8 +1,13 @@
 import React,{useState} from 'react'
-import { Container, makeStyles, Paper, TableBody, TableCell, TableRow,TextField} from '@material-ui/core'
+import { Container, makeStyles, Paper, TableBody, TableCell, TableRow,TextField,Tooltip} from '@material-ui/core'
+import {Button,Stack} from '@mui/material';
+import {Link} from 'react-router-dom'
 import Header from '../../components/HeaderComponent';
 import Table from '../../components/TableComponent';
-import { usersData, headCells } from './UsersData';
+import { headCells } from './UsersData';
+import {MdEdit,MdDelete} from 'react-icons/md'
+import { red } from '@mui/material/colors';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,8 +30,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-const Pagination = () => {
-    const [users, setUsers] = useState(usersData);
+const UsersList = (props) => {
+    const {users,setUsers} = props
+    const danger = red[500];
+    let navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState("");
     const [searchResults, setSearchResults] = useState([]);
     
@@ -47,18 +54,41 @@ const Pagination = () => {
             // console.log("searchResults----->",searchResults)
         }
     }
+    const editUserHandler = (key) => {
+        const targetedUser = users.filter(user => {
+            return key === user.userId
+        })
+        console.log("targetted user ",targetedUser)
+        navigate("/editUser", { state:targetedUser } )
+    }
+    const deleteUserHandler = (key) => {
+        const newUsers = users.filter(user => {
+            return key !== user.userId
+        })
+        setUsers(newUsers)
+    }
     let renderedUsersList = dataAfterPaging().map((user) => (
         <TableRow key={user.id}>
             <TableCell align='center'>{user.userId}</TableCell>
             <TableCell align='center'>{user.name}</TableCell>
             <TableCell align='center'>{user.userCode}</TableCell>
+            <TableCell align='center'>
+            <tooltip title="Edit" placement="top" arrow>
+                <Button onClick={() => editUserHandler(user.userId)}><MdEdit size={32} color="primary"/></Button>
+            </tooltip>
+            <tooltip title="Delete" placement="right" arrow>
+                <Button onClick={() => deleteUserHandler(user.userId)}><MdDelete size={32} color={danger}/></Button>
+            </tooltip>
+            </TableCell>
         </TableRow>
     ))
     return (
         <Container maxWidth='xl' className={classes.root} style={{backgroundColor:"white"}}>
             <Header text='Feature/Pagination' />
-            <TextField id="outlined-basic" label="Search User" variant="outlined"  value={searchTerm} onChange={searchHandler} autoComplete='off'/>
-            
+            <Stack spacing={2} direction="row">
+                <TextField id="outlined-basic" label="Search User" variant="outlined"  value={searchTerm} onChange={searchHandler} autoComplete='off'/>
+                <Link to="./AddUser"><Button variant="contained">Add User</Button></Link>
+            </Stack>
             <Paper className={classes.paper}>
                 <TblContainer>
                     <TblHead />
@@ -75,4 +105,4 @@ const Pagination = () => {
     )
 }
 
-export default Pagination
+export default UsersList

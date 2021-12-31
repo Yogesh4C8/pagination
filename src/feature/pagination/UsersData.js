@@ -18,6 +18,7 @@ export const headCells = [
     {id: 'userId', label: 'User Id'},
     {id: 'name', label: 'Name'},
     {id: 'userCode', label: 'User Code'},
+    {id: 'actions', label: 'Actions'},
 ]
 
 // export const users = {
